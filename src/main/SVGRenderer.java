@@ -70,9 +70,52 @@ public class SVGRenderer
        	g2d.setPaint(new Color(255, 127, 0));
        	g2d.drawString("Draw SVG contents here.", 10, 20);
 
-       	// **
-       	// ** TODO: Draw SVG contents here.
-       	// **
+		for (Element element : svg.elements()) {
+			Shape shape = null;
+			Decorator decorator = null;
+			switch (element.label()) {
+				case "circle":
+					shape = (Circle) element;
+					decorator = new DecoratorGraphics2DCircle((Circle) shape, g2dImage);
+					break;
+				case "rect":
+					shape = (Rect) element;
+					decorator = new DecoratorGraphics2DRect((Rect) shape, g2dImage);
+					break;
+				case "ellipse":
+					shape = (Ellipse) element;
+					decorator = new DecoratorGraphics2DEllipse((Ellipse) shape, g2dImage);
+					break;
+				case "path":
+					shape = (Path) element;
+					decorator = new DecoratorGraphics2DPath((Path) shape, g2dImage);
+					break;
+				case "polygon":
+					shape = (Polygon) element;
+					decorator = new DecoratorGraphics2DPolygon((Polygon) shape, g2dImage);
+					break;
+				case "polyline":
+					shape = (Polyline) element;
+					decorator = new DecoratorGraphics2DPolyline((Polyline) shape, g2dImage);
+					break;
+				case "line":
+					shape = (Line) element;
+					decorator = new DecoratorGraphics2DLine((Line) shape, g2dImage);
+					break;
+			}
+			if (shape != null) {
+				for (Style style : shape.styles())
+					switch (style.label()) {
+                    case "stroke-width":
+                        new DecoratorGraphics2DStrokeWidth
+                                ((StrokeWidth)style, g2dImage).render();
+                        break;
+                }
+			}
+			if (decorator != null) {
+				decorator.render();
+			}
+		}
    	   	
        	if (!view.zoom())
        	{
